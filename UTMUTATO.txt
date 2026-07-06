@@ -1,0 +1,91 @@
+# PensiuneKit — beüzemelési útmutató (kattintásról kattintásra)
+
+Ebben a mappában MINDEN fájl egy szinten van — nincs almappa,
+nincs mit elrendezni. Csak kövesd a lépéseket sorban.
+
+Három ingyenes szolgáltatást használunk:
+GitHub (itt van a kód) → Vercel (ez futtatja az oldalt) → Supabase (belépés + adatbázis)
+
+════════════════════════════════════════════
+1. RÉSZ — FELTÖLTÉS GITHUBRA (3 perc)
+════════════════════════════════════════════
+
+1. Menj a github.com oldalra, lépj be.
+2. Jobb felül: + jel → New repository.
+3. Repository name: pensiunekit → legyen Public → zöld gomb: Create repository.
+4. A megjelenő oldalon kattints az "uploading an existing file" linkre.
+5. Jelöld ki EZT AZ ÖSSZES FÁJLT egyszerre (Ctrl+A a kicsomagolt mappában),
+   és húzd be őket a böngészőbe. Mivel nincs almappa, nem tud elromlani.
+6. Lent zöld gomb: Commit changes.
+
+════════════════════════════════════════════
+2. RÉSZ — ÉLESÍTÉS VERCELEN (3 perc)
+════════════════════════════════════════════
+
+1. Menj a vercel.com oldalra → Sign Up → "Continue with GitHub"
+   (így összekapcsolódik a GitHub-fiókoddal, nem kell külön jelszó).
+2. Add New... → Project.
+3. A listában megjelenik a "pensiunekit" repó → Import.
+4. SEMMIT ne állíts át → Deploy gomb.
+5. 1-2 perc, és kapsz egy linket (pl. pensiunekit.vercel.app).
+   Az oldal már él! A landing működik, a belépéshez még kell a 3. rész.
+
+════════════════════════════════════════════
+3. RÉSZ — BELÉPÉS + ADATBÁZIS (SUPABASE, 7 perc)
+════════════════════════════════════════════
+
+1. Menj a supabase.com oldalra → Start your project →
+   itt is "Continue with GitHub".
+2. New project → Name: pensiunekit → adj meg egy adatbázis-jelszót
+   (írd fel magadnak!) → Region: maradhat → Create new project.
+   Várj 1-2 percet, amíg elkészül.
+
+3. ADATBÁZIS LÉTREHOZÁSA:
+   Bal oldali menü: SQL Editor → New query.
+   Nyisd meg a supabase-adatbazis.sql fájlt (ebben a mappában van,
+   Jegyzettömbbel is megnyílik), másold be a TELJES tartalmát,
+   majd jobb alul: RUN. Ha zöld "Success" jelenik meg, kész.
+
+4. A KÉT KULCS KIMÁSOLÁSA:
+   Bal oldali menü: Settings (fogaskerék) → API.
+   Itt látsz két értéket:
+   • Project URL         (https://valami.supabase.co)
+   • anon public kulcs   (hosszú betűsor)
+   Hagyd nyitva ezt a lapot.
+
+5. A KULCSOK BEÍRÁSA A KÓDBA:
+   Új böngészőfülön menj a GitHub repódhoz → kattints a config.js fájlra
+   → jobb felül ceruza ikon (Edit).
+   A két idézőjeles helyre másold be a két értéket a Supabase-lapról:
+
+   export const SUPABASE_URL = "https://valami.supabase.co";
+   export const SUPABASE_ANON_KEY = "eyJhbGci...hosszú betűsor...";
+
+   Jobb felül zöld gomb: Commit changes.
+
+6. A Vercel ezt észreveszi, és 1-2 perc alatt magától újraépíti az
+   oldalt. Frissítsd a pensiunekit.vercel.app oldalt → Kezdés ingyen
+   → és már működik a regisztráció, a belépés és a mentés!
+
+════════════════════════════════════════════
+JÓ TUDNI
+════════════════════════════════════════════
+
+• Az "anon public" kulcs nyugodtan lehet a kódban — publikusnak
+  tervezték, a biztonságot az adatbázis-szabályok adják (mindenki
+  csak a saját adatait éri el). A "service_role" kulcsot viszont
+  SOHA ne másold sehova.
+
+• Regisztrációkor a Supabase megerősítő e-mailt küld — az első
+  belépés előtt erre rá kell kattintani (spam mappát is nézd!).
+
+• Google-belépés: alapból ki van kapcsolva. Ha kell, a Supabase-ben
+  az Authentication → Providers → Google alatt kapcsolható be
+  (ehhez Google Cloud beállítás is kell — ráérünk később).
+
+• Az élő AI-generálás ebben a verzióban barátságos üzenetet mutat;
+  bekötése egy külön, opcionális lépés — ha ide eljutottál, szólj,
+  és azt is megcsináljuk.
+
+• Ha bármelyik lépésnél mást látsz, mint amit írtam: képernyőkép,
+  és megmondom, hova kattints.
