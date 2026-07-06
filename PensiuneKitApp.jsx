@@ -88,6 +88,9 @@ const PROPERTY_INIT = {
   taxi: "+40 744 987 654",
   email: "hello@borokavendeghaz.ro",
   address: "Fenyves utca 12., Hargita megye, Románia",
+  heroTitle: "Hegyi csend, erdei kilátás, házi reggeli.",
+  heroSub: "8 szobás családi vendégház Hargita megye fenyvesei között — ahol a nap madárcsicsergéssel és frissen sült kenyér illatával kezdődik.",
+  ctaText: "Szobák megtekintése",
 };
 
 const ROOMS = [
@@ -388,18 +391,71 @@ function Stars({ n, size = 13 }) {
 
 /* ───────────── Vezérlőpult ───────────── */
 
+function TrendChip({ t, good = true }) {
+  return (
+    <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-[10px] font-semibold whitespace-nowrap"
+      style={{ background: good ? T.accentSoft : "#FBEDEA", color: good ? T.accentDark : "#8A2E22" }}>
+      {t}
+    </span>
+  );
+}
+
+function OverviewCard({ icon: I, title, count, children, actionLabel, onAction, warn }) {
+  return (
+    <Card className="p-4 flex flex-col">
+      <div className="flex items-center justify-between mb-2">
+        <div className="flex items-center gap-2">
+          <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: warn ? "#FDF0DC" : T.accentSoft }}>
+            <I size={14} style={{ color: warn ? "#8A5A16" : T.accent }} />
+          </div>
+          <span className="text-xs font-semibold" style={{ color: T.ink }}>{title}</span>
+        </div>
+        <span className="text-sm font-semibold" style={{ color: warn ? "#8A5A16" : T.accent }}>{count}</span>
+      </div>
+      <div className="flex-1 space-y-1.5 text-[12px]" style={{ color: T.ink }}>{children}</div>
+      {onAction && (
+        <button onClick={onAction} className="mt-3 text-[11px] font-semibold text-left inline-flex items-center gap-1" style={{ color: T.accent }}>
+          {actionLabel} <ChevronRight size={12} />
+        </button>
+      )}
+    </Card>
+  );
+}
+
+function Row({ a, b }) {
+  return (
+    <div className="flex items-start justify-between gap-2 py-0.5">
+      <span className="leading-snug">{a}</span>
+      <span className="text-[11px] whitespace-nowrap" style={{ color: T.muted }}>{b}</span>
+    </div>
+  );
+}
+
 function Dashboard({ go }) {
   const kpis = [
-    { label: "Mai érkezések", value: "3", sub: "Nagy E. · Müller H. · Tóth G.", icon: CalendarDays },
-    { label: "Mai távozások", value: "2", sub: "Ionescu M. · Smith O.", icon: ArrowRight },
-    { label: "Aktuális kihasználtság", value: "78%", sub: "6/8 szoba foglalt", icon: BedDouble },
-    { label: "Átlagos értékelés", value: "4.9", sub: "25 friss vélemény alapján", icon: Star },
+    { label: "Mai érkezések", value: "3", trend: "+1", good: true, sub: "múlt hétfőn: 2", icon: CalendarDays },
+    { label: "Mai távozások", value: "2", trend: "–1", good: true, sub: "múlt hétfőn: 3", icon: ArrowRight },
+    { label: "Aktuális kihasználtság", value: "78%", trend: "+6%", good: true, sub: "előző hét: 72%", icon: BedDouble },
+    { label: "Átlagos értékelés", value: "4.9", trend: "+0.1", good: true, sub: "előző hónap: 4.8", icon: Star },
   ];
   const kpis2 = [
-    { label: "QR-útmutató megnyitás (hó)", value: "482", icon: QrCode },
-    { label: "Kiküldött vélemény-kérés", value: "61", icon: MessageSquareQuote },
-    { label: "Elkészült Facebook poszt", value: "12", icon: Megaphone },
-    { label: "AI-válasz generálva", value: "45", icon: Sparkles },
+    { label: "QR-útmutató megnyitás (hó)", value: "482", trend: "+18%", good: true, icon: QrCode },
+    { label: "Kiküldött vélemény-kérés", value: "61", trend: "+9", good: true, icon: MessageSquareQuote },
+    { label: "Elkészült Facebook poszt", value: "12", trend: "+4", good: true, icon: Megaphone },
+    { label: "AI-válasz generálva", value: "45", trend: "+12", good: true, icon: Sparkles },
+  ];
+  const quick = [
+    { i: MessageSquareQuote, l: "Vélemény-válasz", v: "reviews" },
+    { i: Mail, l: "Vendégüzenet", v: "templates" },
+    { i: Megaphone, l: "Poszt írása", v: "marketing" },
+    { i: BookOpen, l: "Útmutató", v: "guide" },
+    { i: QrCode, l: "QR letöltése", v: "qr" },
+    { i: Globe, l: "Weboldal", v: "website" },
+  ];
+  const ai = [
+    { t: "Szeptemberre 58% a foglaltság — a „Szeptemberi erdőillat” kampányterved készen áll az indításra.", b: "Kampány indítása", v: "marketing" },
+    { t: "2 vélemény vár válaszra (Weber Klaus 5★, Georgescu Vlad 4★) — egy perc alatt megválaszolható.", b: "Válaszok írása", v: "reviews" },
+    { t: "A Müller család ma érkezik — német üdvözlő üzenet ajánlott, a vegetáriánus reggeli visszaigazolásával.", b: "Üzenet generálása", v: "templates" },
   ];
   const feed = [
     ["Ionescu Maria kijelentkezett a 108-as szobából", "18 perce", ArrowRight],
@@ -408,12 +464,13 @@ function Dashboard({ go }) {
     ["Facebook poszt generálva: „Hétvégi ajánlat — július”", "ma 9:14", Megaphone],
     ["Vendégkérdés: „Hol tudunk parkolni?” — AI-válasz elküldve", "ma 8:51", Sparkles],
     ["Hétvégi ajánlat kampány elindítva", "tegnap", Megaphone],
-    ["Weber Klaus túratérképet kért — jegyzet rögzítve", "tegnap", Mountain],
     ["Vélemény-emlékeztető kiküldve 4 távozott vendégnek", "2 napja", Mail],
   ];
   return (
     <div>
-      <SectionTitle eyebrow="Vezérlőpult" title="Jó reggelt, Boróka Vendégház! 🌲" desc="Hétfő, július 6. — így indul a heted." />
+      <SectionTitle eyebrow="Vezérlőpult" title="Jó reggelt, Boróka Vendégház! 🌲" desc="Hétfő, július 6. — minden, ami ma számít, egy helyen." />
+
+      {/* KPI-k trendekkel */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {kpis.map((s) => (
           <Card key={s.label} className="p-5">
@@ -421,25 +478,56 @@ function Dashboard({ go }) {
               <span className="text-xs font-medium" style={{ color: T.muted }}>{s.label}</span>
               <s.icon size={16} style={{ color: T.accent }} />
             </div>
-            <div className="mt-2 text-3xl font-semibold tracking-tight" style={{ color: T.ink }}>{s.value}</div>
-            <div className="mt-1 text-xs truncate" style={{ color: T.muted }}>{s.sub}</div>
-          </Card>
-        ))}
-      </div>
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
-        {kpis2.map((s) => (
-          <Card key={s.label} className="p-4 flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: T.accentSoft }}>
-              <s.icon size={16} style={{ color: T.accent }} />
+            <div className="mt-2 flex items-baseline gap-2">
+              <span className="text-3xl font-semibold tracking-tight" style={{ color: T.ink }}>{s.value}</span>
+              <TrendChip t={s.trend} good={s.good} />
             </div>
-            <div>
-              <div className="text-xl font-semibold tracking-tight" style={{ color: T.ink }}>{s.value}</div>
-              <div className="text-[11px]" style={{ color: T.muted }}>{s.label}</div>
-            </div>
+            <div className="mt-1 text-xs" style={{ color: T.muted }}>{s.sub}</div>
           </Card>
         ))}
       </div>
 
+      {/* Mai áttekintés + gyors műveletek */}
+      <div className="mt-6 mb-2 text-sm font-semibold" style={{ color: T.ink }}>Mai áttekintés</div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <OverviewCard icon={CalendarDays} title="Érkezések" count="3" actionLabel="Vendéglista" onAction={() => go("guests")}>
+          <Row a={<><b>Nagy Eszter</b> · 101 · kutyával 🐾</>} b="~14:00" />
+          <Row a={<><b>Müller Hannah</b> · 104 · veget. reggeli</>} b="~15:00" />
+          <Row a={<><b>Tóth Gábor</b> · 103 · motorral</>} b="~17:00" />
+        </OverviewCard>
+        <OverviewCard icon={ArrowRight} title="Távozások" count="2" actionLabel="Vendéglista" onAction={() => go("guests")}>
+          <Row a={<><b>Ionescu Maria</b> · 108 · kései kijelentkezés</>} b="12:00-ig" />
+          <Row a={<><b>Smith Oliver</b> · 103 · kijelentkezett</>} b="✓ 9:40" />
+        </OverviewCard>
+        <OverviewCard icon={Flame} title="Takarítandó szobák" count="2" warn actionLabel="Szobák" onAction={() => go("rooms")}>
+          <Row a={<><b>103</b> — Tóth G. érkezéséig!</>} b="14:00-ig" />
+          <Row a={<><b>108</b> — Ionescu M. távozása után</>} b="12:00 után" />
+        </OverviewCard>
+        <OverviewCard icon={MessageSquareQuote} title="Válaszra váró vélemények" count="2" warn actionLabel="Válaszolok" onAction={() => go("reviews")}>
+          <Row a={<><b>Weber Klaus</b> · Google · 5★</>} b="ma" />
+          <Row a={<><b>Georgescu Vlad</b> · Tripadvisor · 4★</>} b="tegnap" />
+        </OverviewCard>
+        <OverviewCard icon={Mail} title="Vendégüzenetek" count="3" warn actionLabel="Válasz az AI-val" onAction={() => go("assistant")}>
+          <Row a={<><b>Dumitrescu E.:</b> „Tudunk tortát rendelni?”</>} b="32 perce" />
+          <Row a={<><b>Braun S.:</b> „Két kutyával jöhetünk?”</>} b="1 órája" />
+          <Row a={<><b>Rossi M.:</b> „Van transzfer a reptérről?”</>} b="2 órája" />
+        </OverviewCard>
+        <Card className="p-4">
+          <div className="text-xs font-semibold mb-3" style={{ color: T.ink }}>Gyors műveletek</div>
+          <div className="grid grid-cols-3 gap-2">
+            {quick.map((q) => (
+              <button key={q.l} onClick={() => go(q.v)}
+                className="rounded-xl p-2.5 flex flex-col items-center gap-1.5 transition-all hover:opacity-80"
+                style={{ border: `1px solid ${T.line}`, background: "#FAFAF8" }}>
+                <q.i size={16} style={{ color: T.accent }} />
+                <span className="text-[10px] font-medium text-center leading-tight" style={{ color: T.ink }}>{q.l}</span>
+              </button>
+            ))}
+          </div>
+        </Card>
+      </div>
+
+      {/* Grafikon + AI-javaslatok */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4">
         <Card className="p-5 lg:col-span-2">
           <div className="flex items-center justify-between mb-4">
@@ -468,25 +556,43 @@ function Dashboard({ go }) {
           </div>
         </Card>
         <Card className="p-5">
-          <div className="text-sm font-semibold mb-3" style={{ color: T.ink }}>Mai teendők</div>
-          {[
-            ["103-as szoba takarítása Tóth G. érkezése előtt", "14:00-ig"],
-            ["Müller család: vegetáriánus reggeli előkészítése", "holnap reggel"],
-            ["Nagy Eszter kutyás csomag kikészítése (101)", "délután"],
-            ["Vélemény-válasz: Brown Emily (Airbnb)", "kész ✓"],
-          ].map(([t, w]) => (
-            <div key={t} className="flex items-start justify-between gap-2 py-2.5 text-sm" style={{ borderBottom: `1px solid ${T.line}` }}>
-              <span style={{ color: T.ink }}>{t}</span>
-              <span className="text-xs whitespace-nowrap" style={{ color: T.muted }}>{w}</span>
-            </div>
-          ))}
-          <div className="mt-4 text-xs flex items-start gap-2 rounded-xl p-3" style={{ background: T.accentSoft, color: T.accentDark }}>
-            <Sparkles size={14} className="mt-0.5 shrink-0" />
-            AI-javaslat: szeptemberre 58% a foglaltság — érdemes most elindítani a „Szeptemberi erdőillat” kampányt.
+          <div className="flex items-center gap-1.5 text-sm font-semibold mb-3" style={{ color: T.ink }}>
+            <Sparkles size={15} style={{ color: T.accent }} /> AI-javaslatok mára
+          </div>
+          <div className="space-y-3">
+            {ai.map((x) => (
+              <div key={x.b} className="rounded-xl p-3" style={{ background: T.accentSoft }}>
+                <p className="text-[12px] leading-relaxed" style={{ color: T.accentDark }}>{x.t}</p>
+                <button onClick={() => go(x.v)}
+                  className="mt-2 px-2.5 py-1.5 rounded-lg text-[11px] font-semibold text-white"
+                  style={{ background: T.accent }}>
+                  {x.b}
+                </button>
+              </div>
+            ))}
           </div>
         </Card>
       </div>
 
+      {/* Másodlagos KPI-k trendekkel */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
+        {kpis2.map((s) => (
+          <Card key={s.label} className="p-4 flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style={{ background: T.accentSoft }}>
+              <s.icon size={16} style={{ color: T.accent }} />
+            </div>
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5">
+                <span className="text-xl font-semibold tracking-tight" style={{ color: T.ink }}>{s.value}</span>
+                <TrendChip t={s.trend} good={s.good} />
+              </div>
+              <div className="text-[11px] truncate" style={{ color: T.muted }}>{s.label}</div>
+            </div>
+          </Card>
+        ))}
+      </div>
+
+      {/* Aktivitás + top oldalak */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mt-4">
         <Card className="p-5">
           <div className="flex items-center justify-between mb-4">
@@ -1207,16 +1313,39 @@ function Analytics() {
 
 /* ───────────── Nyilvános weboldal ───────────── */
 
-function Website({ p }) {
+function Website({ p, setP }) {
   const [sent, setSent] = useState(false);
+  const [published, setPublished] = useState(false);
+  const setField = (k) => (v) => setP({ ...p, [k]: v });
   const [form, setForm] = useState({ name: "", email: "", from: "", to: "", guests: "2 felnőtt", msg: "" });
   const sf = (k) => (e) => setForm({ ...form, [k]: e.target.value });
   const serif = { fontFamily: "Georgia, 'Times New Roman', serif" };
 
   return (
     <div>
-      <SectionTitle eyebrow="Nyilvános weboldal" title="Így látják a vendégek a borokavendeghaz.ro oldalt"
-        desc="A PensiuneKit automatikusan generálja a szállás prémium weboldalát a megadott adatokból." />
+      <SectionTitle eyebrow="Weboldal-készítő" title="A vendégházad saját weboldala"
+        desc="Szerkeszd a szövegeket, és a lenti élő előnézet azonnal frissül — közzététel egy kattintással." />
+      <Card className="p-5 mb-4">
+        <div className="flex items-center justify-between flex-wrap gap-3 mb-4">
+          <div className="flex items-center gap-2 text-xs font-medium" style={{ color: T.muted }}>
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full" style={{ background: T.accentSoft, color: T.accentDark }}>
+              <Globe size={12} /> borokavendeghaz.ro · Közzétéve
+            </span>
+            <span>Utolsó frissítés: ma 9:20</span>
+          </div>
+          <button onClick={() => { setPublished(true); setTimeout(() => setPublished(false), 3000); }}
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold text-white"
+            style={{ background: T.accent }}>
+            {published ? <Check size={13} /> : <Globe size={13} />}
+            {published ? "Közzétéve ✓" : "Változtatások közzététele"}
+          </button>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <Field label="Főcím (hero)" value={p.heroTitle} onChange={setField("heroTitle")} />
+          <Field label="Alcím" value={p.heroSub} onChange={setField("heroSub")} />
+          <Field label="Gomb felirata" value={p.ctaText} onChange={setField("ctaText")} />
+        </div>
+      </Card>
       <Card className="overflow-hidden" style={{ boxShadow: "0 12px 40px rgba(0,0,0,0.08)" }}>
         {/* website nav */}
         <div className="flex items-center justify-between px-6 py-4" style={{ borderBottom: "1px solid #EDE9E1", background: "#FDFBF7" }}>
@@ -1233,12 +1362,12 @@ function Website({ p }) {
         {/* hero */}
         <div className="relative flex flex-col items-center justify-center text-center px-6" style={{ height: 320, background: "linear-gradient(160deg, #1d5238 0%, #2F6B4F 55%, #46795B 100%)" }}>
           <div className="absolute inset-0" style={{ background: "radial-gradient(circle at 80% 10%, rgba(255,255,255,0.2), transparent 45%)" }} />
-          <div className="relative text-3xl sm:text-4xl text-white" style={serif}>Hegyi csend, erdei kilátás,<br />házi reggeli.</div>
+          <div className="relative text-3xl sm:text-4xl text-white" style={serif}>{p.heroTitle || "Hegyi csend, erdei kilátás, házi reggeli."}</div>
           <p className="relative mt-3 text-sm max-w-md" style={{ color: "rgba(255,255,255,0.85)" }}>
-            8 szobás családi vendégház Hargita megye fenyvesei között — ahol a nap madárcsicsergéssel és frissen sült kenyér illatával kezdődik.
+            {p.heroSub || ""}
           </p>
           <div className="relative mt-5 flex gap-3">
-            <span className="px-5 py-2.5 rounded-full text-sm font-semibold cursor-pointer" style={{ background: "#fff", color: T.accentDark }}>Szobák megtekintése</span>
+            <span className="px-5 py-2.5 rounded-full text-sm font-semibold cursor-pointer" style={{ background: "#fff", color: T.accentDark }}>{p.ctaText || "Szobák megtekintése"}</span>
             <span className="px-5 py-2.5 rounded-full text-sm font-semibold cursor-pointer text-white" style={{ border: "1px solid rgba(255,255,255,0.5)" }}>Galéria</span>
           </div>
         </div>
@@ -1391,10 +1520,10 @@ function Website({ p }) {
 
 const NAV = [
   { id: "dashboard", label: "Vezérlőpult", icon: LayoutDashboard },
+  { id: "website", label: "Weboldal-készítő", icon: Globe },
+  { id: "guide", label: "Vendégútmutató", icon: BookOpen },
   { id: "rooms", label: "Szobák", icon: BedDouble },
   { id: "guests", label: "Vendégek", icon: Users },
-  { id: "guide", label: "Vendégútmutató", icon: BookOpen },
-  { id: "website", label: "Weboldal", icon: Globe },
   { id: "assistant", label: "AI Asszisztens", icon: Sparkles },
   { id: "reviews", label: "Vélemények", icon: MessageSquareQuote },
   { id: "templates", label: "Üzenetsablonok", icon: Mail },
@@ -1417,7 +1546,7 @@ export default function PensiuneKit({ initialProperty, onSaveProperty, onLogout,
     rooms: <Rooms />,
     guests: <Guests />,
     guide: <GuideEditor p={p} setP={setP} onSave={onSaveProperty ? () => onSaveProperty(p) : null} />,
-    website: <Website p={p} />,
+    website: <Website p={p} setP={setP} />,
     assistant: <AiAssistant p={p} />,
     reviews: <Reviews p={p} />,
     templates: <Templates p={p} />,
