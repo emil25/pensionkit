@@ -25,3 +25,12 @@ create policy "Sajat adat letrehozasa"
 create policy "Sajat adat modositasa"
   on public.properties for update
   using (auth.uid() = user_id);
+
+
+-- ─────────────────────────────────────────────
+--  FRISSÍTÉS: a vendégútmutató nyilvános elérése
+--  (a QR-kódról megnyitott oldalnak kell)
+-- ─────────────────────────────────────────────
+create policy "Nyilvanos utmutato olvasasa"
+  on public.properties for select
+  using (true);

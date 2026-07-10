@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Mountain, AlertCircle, Eye } from "lucide-react";
 import PensiuneKitLanding from "./PensiuneKitLanding.jsx";
-import PensiuneKitApp from "./PensiuneKitApp.jsx";
+import PensiuneKitApp, { PublicGuideView, PROPERTY_INIT } from "./PensiuneKitApp.jsx";
 import Auth from "./Auth.jsx";
 import { supabase, isConfigured } from "./supabaseClient.js";
 
@@ -38,6 +38,36 @@ function SetupScreen({ onDemo }) {
       </div>
     </div>
   );
+}
+
+function PublicGuideRoute({ slug }) {
+  const [prop, setProp] = useState(null);
+
+  useEffect(() => {
+    let live = true;
+    if (isConfigured && slug) {
+      supabase
+        .from("properties")
+        .select("data")
+        .eq("data->>slug", slug)
+        .maybeSingle()
+        .then(({ data }) => {
+          if (live) setProp(data && data.data ? data.data : PROPERTY_INIT);
+        });
+    } else {
+      setProp(PROPERTY_INIT); // demó-útmutató (Boróka)
+    }
+    return () => { live = false; };
+  }, [slug]);
+
+  if (!prop) {
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ background: "#F7F7F5" }}>
+        <div className="text-sm" style={{ color: "#6E7076" }}>Útmutató betöltése…</div>
+      </div>
+    );
+  }
+  return <PublicGuideView p={prop} />;
 }
 
 export default function App() {
@@ -91,6 +121,13 @@ export default function App() {
   };
 
   const isApp = route === "#app";
+  const isGuide = route.startsWith("#g");
+
+  // 0) Nyilvános vendégútmutató — ezt nyitja meg a QR-kód
+  if (isGuide) {
+    const slug = route.includes("/") ? route.split("/")[1] : "";
+    return <PublicGuideRoute slug={slug} />;
+  }
 
   // 1) Landing mindig elérhető
   if (!isApp) return <PensiuneKitLanding />;

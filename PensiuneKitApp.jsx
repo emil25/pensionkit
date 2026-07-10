@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import {
   LayoutDashboard, BookOpen, Sparkles, MessageSquareQuote, Mail, QrCode,
   Megaphone, BarChart3, ChevronDown, Wifi, Coffee, Car, PawPrint,
@@ -73,7 +73,7 @@ function Photo({ label, icon: Icon = Trees, h = 0, className = "", height = 120,
 
 /* ───────────── DEMÓ ADATOK ───────────── */
 
-const PROPERTY_INIT = {
+export const PROPERTY_INIT = {
   name: "Boróka Vendégház",
   tagline: "Hegyi csend, erdei kilátás, házi reggeli",
   desc: "Hangulatos hegyvidéki vendégház 8 szobával Hargita megyében — erdőre néző szobák, házi készítésű reggeli és családbarát légkör.",
@@ -88,6 +88,7 @@ const PROPERTY_INIT = {
   taxi: "+40 744 987 654",
   email: "hello@borokavendeghaz.ro",
   address: "Fenyves utca 12., Hargita megye, Románia",
+  slug: "boroka",
   heroTitle: "Hegyi csend, erdei kilátás, házi reggeli.",
   heroSub: "8 szobás családi vendégház Hargita megye fenyvesei között — ahol a nap madárcsicsergéssel és frissen sült kenyér illatával kezdődik.",
   ctaText: "Szobák megtekintése",
@@ -730,12 +731,10 @@ function GSection({ icon: I, title, children }) {
   );
 }
 
-function PhonePreview({ p }) {
+function GuideContent({ p }) {
   return (
-    <div className="mx-auto rounded-[2.4rem] p-2.5 shrink-0"
-      style={{ width: 300, background: "#17181A", boxShadow: "0 24px 60px rgba(0,0,0,0.25)" }}>
-      <div className="rounded-[2rem] overflow-hidden" style={{ background: "#FDFBF7", height: 620, overflowY: "auto" }}>
-        <div className="h-40 flex flex-col items-center justify-center text-center px-6 relative"
+    <>
+      <div className="h-40 flex flex-col items-center justify-center text-center px-6 relative"
           style={{ background: "linear-gradient(160deg, #1d5238, #2F6B4F)" }}>
           <div className="absolute inset-0" style={{ background: "radial-gradient(circle at 80% 15%, rgba(255,255,255,0.18), transparent 50%)" }} />
           <div className="text-white text-xl relative" style={{ fontFamily: "Georgia, serif" }}>{p.name}</div>
@@ -779,6 +778,34 @@ function PhonePreview({ p }) {
           </div>
           <div className="text-center text-[10px] py-3" style={{ color: "#B8B3A8" }}>Készült a PensiuneKit-tel</div>
         </div>
+    </>
+  );
+}
+
+function PhonePreview({ p }) {
+  return (
+    <div className="mx-auto rounded-[2.4rem] p-2.5 shrink-0"
+      style={{ width: 300, background: "#17181A", boxShadow: "0 24px 60px rgba(0,0,0,0.25)" }}>
+      <div className="rounded-[2rem] overflow-hidden" style={{ background: "#FDFBF7", height: 620, overflowY: "auto" }}>
+        <GuideContent p={p} />
+      </div>
+    </div>
+  );
+}
+
+// Teljes képernyős vendég-nézet — ugyanez fut a nyilvános #g/szallas linken is
+export function PublicGuideView({ p, onClose }) {
+  return (
+    <div className="fixed inset-0 z-50 overflow-y-auto" style={{ background: "#EFECE5" }}>
+      {onClose && (
+        <button onClick={onClose}
+          className="fixed top-4 right-4 z-50 px-3.5 py-2 rounded-full text-xs font-semibold text-white"
+          style={{ background: "#17181A", boxShadow: "0 4px 16px rgba(0,0,0,0.3)" }}>
+          ✕ Vissza a szerkesztőbe
+        </button>
+      )}
+      <div className="mx-auto min-h-screen w-full" style={{ maxWidth: 430, background: "#FDFBF7", boxShadow: "0 0 40px rgba(0,0,0,0.12)" }}>
+        <GuideContent p={p} />
       </div>
     </div>
   );
@@ -801,7 +828,38 @@ function Field({ label, value, onChange, textarea }) {
   );
 }
 
-function GuideEditor({ p, setP, onSave }) {
+function PublicLinkBox({ p, onOpenGuest }) {
+  const [copied, setCopied] = useState(false);
+  const url = (typeof window !== "undefined"
+    ? window.location.origin + window.location.pathname
+    : "https://pensiunekit.app/") + "#g/" + (p.slug || "boroka");
+  return (
+    <div className="rounded-xl p-3" style={{ background: T.accentSoft }}>
+      <div className="flex items-center gap-2 text-xs font-semibold mb-2" style={{ color: T.accentDark }}>
+        <Globe size={14} /> A vendégeid nyilvános útmutatója
+      </div>
+      <div className="text-[11px] break-all mb-2.5 px-2.5 py-2 rounded-lg bg-white" style={{ color: T.ink, border: `1px solid ${T.line}` }}>{url}</div>
+      <div className="flex flex-wrap gap-2">
+        <a href={url} target="_blank" rel="noreferrer"
+          className="px-3 py-1.5 rounded-lg text-[11px] font-semibold text-white" style={{ background: T.accent, textDecoration: "none" }}>
+          Megnyitás új lapon
+        </a>
+        <button onClick={() => { navigator.clipboard.writeText(url); setCopied(true); setTimeout(() => setCopied(false), 1500); }}
+          className="px-3 py-1.5 rounded-lg text-[11px] font-semibold bg-white" style={{ border: `1px solid ${T.line}`, color: T.ink }}>
+          {copied ? "Kimásolva ✓" : "Link másolása"}
+        </button>
+        {onOpenGuest && (
+          <button onClick={onOpenGuest}
+            className="px-3 py-1.5 rounded-lg text-[11px] font-semibold bg-white" style={{ border: `1px solid ${T.line}`, color: T.ink }}>
+            Vendég-nézet itt
+          </button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function GuideEditor({ p, setP, onSave, onOpenGuest }) {
   const set = (k) => (v) => setP({ ...p, [k]: v });
   const [saveMsg, setSaveMsg] = useState(null);
   const [saving, setSaving] = useState(false);
@@ -840,10 +898,7 @@ function GuideEditor({ p, setP, onSave }) {
               ))}
             </div>
           </div>
-          <div className="flex items-center gap-2 text-xs rounded-xl p-3" style={{ background: T.accentSoft, color: T.accentDark }}>
-            <Globe size={14} />
-            Nyilvános link: pensiunekit.app/boroka — elérhető 7 nyelven, QR-kódról is.
-          </div>
+          <PublicLinkBox p={p} onOpenGuest={onOpenGuest} />
           {onSave && (
             <div className="flex items-center gap-3">
               <button onClick={doSave} disabled={saving}
@@ -1164,35 +1219,93 @@ function Marketing({ p }) {
 
 /* ───────────── QR nézet ───────────── */
 
-function QrView({ p }) {
-  const cells = useMemo(() => {
+function QrView({ p, onOpenGuest }) {
+  const guideUrl = (typeof window !== "undefined"
+    ? window.location.origin + window.location.pathname
+    : "https://pensiunekit.app/") + "#g/" + (p.slug || "boroka");
+
+  const [qrPng, setQrPng] = useState(null);
+  const [qrSvg, setQrSvg] = useState(null);
+
+  useEffect(() => {
+    let live = true;
+    import("qrcode")
+      .then(async (QR) => {
+        const png = await QR.toDataURL(guideUrl, {
+          width: 480, margin: 1,
+          color: { dark: "#17181A", light: "#FFFFFF" },
+        });
+        const svg = await QR.toString(guideUrl, { type: "svg", margin: 1, color: { dark: "#17181A", light: "#FFFFFF" } });
+        if (live) { setQrPng(png); setQrSvg(svg); }
+      })
+      .catch(() => {}); // chat-előnézetben nincs qrcode csomag → dekoratív minta marad
+    return () => { live = false; };
+  }, [guideUrl]);
+
+  const fallbackCells = useMemo(() => {
     const seed = p.name.length * 7;
     return Array.from({ length: 169 }, (_, i) => ((i * 31 + seed) % 7) < 3);
   }, [p.name]);
+
+  const downloadSvg = () => {
+    if (!qrSvg) return;
+    const blob = new Blob([qrSvg], { type: "image/svg+xml" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "pensiunekit-qr.svg";
+    a.click();
+    URL.revokeObjectURL(a.href);
+  };
+
   return (
     <div className="max-w-3xl">
       <SectionTitle eyebrow="QR-kód generátor" title="Nyomtatható QR-anyagok"
         desc="231 beolvasás e hónapban — 82% a szobákból. A vendég beolvassa, és app nélkül megnyílik az útmutató." />
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Card className="p-6 flex flex-col items-center">
-          <div className="rounded-2xl p-4" style={{ background: "#fff", border: `1px solid ${T.line}` }}>
-            <div className="grid" style={{ gridTemplateColumns: "repeat(13, 10px)" }}>
-              {cells.map((on, i) => (
-                <div key={i} style={{ width: 10, height: 10, background: on ? T.ink : "transparent", borderRadius: 2 }} />
-              ))}
+          {qrPng ? (
+            <img src={qrPng} alt="QR-kód a vendégútmutatóhoz" className="rounded-2xl"
+              style={{ width: 180, height: 180, border: `1px solid ${T.line}` }} />
+          ) : (
+            <div className="rounded-2xl p-4" style={{ background: "#fff", border: `1px solid ${T.line}` }}>
+              <div className="grid" style={{ gridTemplateColumns: "repeat(13, 10px)" }}>
+                {fallbackCells.map((on, i) => (
+                  <div key={i} style={{ width: 10, height: 10, background: on ? T.ink : "transparent", borderRadius: 2 }} />
+                ))}
+              </div>
             </div>
-          </div>
+          )}
           <div className="mt-4 text-sm font-semibold" style={{ color: T.ink }}>{p.name}</div>
-          <div className="text-xs" style={{ color: T.muted }}>pensiunekit.app/boroka</div>
-          <div className="mt-4 flex gap-2">
-            {["PNG", "SVG", "Nyomtatás"].map((x) => (
-              <span key={x} className="px-3 py-1.5 rounded-lg text-xs font-medium cursor-pointer"
-                style={{ border: `1px solid ${T.line}`, color: T.ink }}>{x}</span>
-            ))}
+          <div className="text-[11px] break-all text-center px-2" style={{ color: T.muted }}>{guideUrl}</div>
+          <div className="mt-4 flex flex-wrap justify-center gap-2">
+            {qrPng ? (
+              <>
+                <a href={qrPng} download="pensiunekit-qr.png"
+                  className="px-3 py-1.5 rounded-lg text-xs font-semibold text-white" style={{ background: T.accent, textDecoration: "none" }}>
+                  PNG letöltése
+                </a>
+                <button onClick={downloadSvg}
+                  className="px-3 py-1.5 rounded-lg text-xs font-medium" style={{ border: `1px solid ${T.line}`, color: T.ink }}>
+                  SVG letöltése
+                </button>
+              </>
+            ) : (
+              <span className="text-[10px] text-center" style={{ color: T.muted }}>
+                Előnézeti minta — a feltöltött (éles) oldalon valódi, beolvasható QR-kód készül.
+              </span>
+            )}
+            {onOpenGuest && (
+              <button onClick={onOpenGuest}
+                className="px-3 py-1.5 rounded-lg text-xs font-medium" style={{ border: `1px solid ${T.line}`, color: T.ink }}>
+                Vendég-nézet
+              </button>
+            )}
           </div>
-          <div className="mt-3 text-[10px] text-center" style={{ color: T.muted }}>
-            Demó-minta — a kész termékben valódi, beolvasható QR-kód készül.
-          </div>
+          {qrPng && (
+            <div className="mt-3 text-[10px] text-center" style={{ color: T.muted }}>
+              Ez már valódi QR — a telefonoddal kipróbálhatod: az útmutatóra mutat.
+            </div>
+          )}
         </Card>
         <div className="space-y-4">
           {[
@@ -1541,17 +1654,19 @@ export default function PensiuneKit({ initialProperty, onSaveProperty, onLogout,
     if (initialProperty) setP(initialProperty);
   }, [initialProperty]);
 
+  const [guestView, setGuestView] = useState(false);
+
   const views = {
     dashboard: <Dashboard go={setView} />,
     rooms: <Rooms />,
     guests: <Guests />,
-    guide: <GuideEditor p={p} setP={setP} onSave={onSaveProperty ? () => onSaveProperty(p) : null} />,
+    guide: <GuideEditor p={p} setP={setP} onSave={onSaveProperty ? () => onSaveProperty(p) : null} onOpenGuest={() => setGuestView(true)} />,
     website: <Website p={p} setP={setP} />,
     assistant: <AiAssistant p={p} />,
     reviews: <Reviews p={p} />,
     templates: <Templates p={p} />,
     marketing: <Marketing p={p} />,
-    qr: <QrView p={p} />,
+    qr: <QrView p={p} onOpenGuest={() => setGuestView(true)} />,
     analytics: <Analytics />,
   };
 
@@ -1617,6 +1732,7 @@ export default function PensiuneKit({ initialProperty, onSaveProperty, onLogout,
         </div>
         <main className="p-5 md:p-8 max-w-6xl">{views[view]}</main>
       </div>
+      {guestView && <PublicGuideView p={p} onClose={() => setGuestView(false)} />}
     </div>
   );
 }
