@@ -21,6 +21,7 @@ Kis panziók, családi vendégházak és kiadó házak napi munkájára készül
 - Indulási lista a saját áttekintésen, valós mentett adatokból számolt előrehaladással és az első foglaláshoz vezető gombbal.
 - Saját szállásbeállítások, szobák és teljes kiadó házak felvétele.
 - Foglalás rögzítése, szerkesztése, lemondása és keresése.
+- Egyszerű foglalásfelvétel: vendégnév, érkezés, távozás és szoba vagy kiadó ház. A további adatok külön nyithatók meg; az ár a szobabeállításból érkezik, új foglalásnál a befizetés alapból 0. A meglévő részletek szerkesztéskor megmaradnak akkor is, ha a kiegészítő mezőket nem nyitod meg.
 - Időpontütközés, férőhely, érvényes dátum és befizetés ellenőrzése.
 - Kéthetes szobánkénti naptár. A távozás napja újra foglalható.
 - Napi érkezések, várható távozások, foglalt szobák és takarítási állapot.

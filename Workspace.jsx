@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ArrowDownToLine, ArrowRight, BedDouble, BookOpen, CalendarDays, Check, CheckCheck, ChevronLeft, ChevronRight, CircleHelp, CircleDollarSign, ClipboardList, Cloud, Coffee, Copy, DoorOpen, Download, Ellipsis, Globe, House, Leaf, LogOut, Mail, Menu, MessageSquare, Mountain, Plus, Search, Settings, ShieldCheck, Sparkles, Sprout, Users, Wifi, X } from 'lucide-react';
 import QRCode from 'qrcode';
+import './booking-form.css';
 import Finance from './Finance.jsx';
 import Onboarding, { SetupChecklist } from './Onboarding.jsx';
 import { activeBooking, addDays, createState, DEFAULT_PROPERTY, LANGUAGES, messageFor, money, nights, shortDate, STATUS, today, uid, validateBooking, validateState } from './model.js';
@@ -105,9 +106,54 @@ export default function Workspace({ initialState, storageKey, demoMode, userEmai
 function PageTitle({ eyebrow, title, text, action }) { return <div className="page-heading"><div><div className="eyebrow">{eyebrow}</div><h1>{title}</h1><p>{text}</p></div>{action}</div>; }
 function TaskInput({ onAdd }) { const [text, setText] = useState(''); return <form className="task-input" onSubmit={e => { e.preventDefault(); if (!text.trim()) return; onAdd(text.trim()); setText(''); }}><Plus size={15}/><input aria-label="Új teendő" placeholder="Új teendő hozzáadása…" value={text} maxLength={200} onChange={e => setText(e.target.value)}/><button type="submit" disabled={!text.trim()} aria-label="Teendő hozzáadása"><ArrowRight size={15}/></button></form>; }
 function BookingForm({ draft, state, onSave }) {
-  const [b, setB] = useState({ ...draft }); const [error, setError] = useState(''); const set = key => e => setB(s => ({ ...s, [key]: e.target.value }));
-  function submit(e) { e.preventDefault(); const value = { ...b, name: b.name.trim(), guests: Number(b.guests), price: Number(b.price), deposit: Number(b.deposit) }; const error = validateBooking(value, state); if (error) return setError(error); if (b.status === 'checked-in' && (draft.status !== 'checked-in' || b.roomId !== draft.roomId) && (!state.rooms.find(r => r.id === b.roomId)?.clean || b.from > today() || b.to <= today())) return setError('Érkeztetéshez tiszta szoba és aktuális tartózkodási időszak szükséges.'); onSave(value); }
-  return <form onSubmit={submit} className="edit-form"><div className="form-grid"><Field label="Vendég neve" value={b.name} onChange={set('name')} required maxLength={100}/><Field label="E-mail cím" type="email" value={b.email} onChange={set('email')} maxLength={180}/><Field label="Szoba"><select value={b.roomId} onChange={e => { const room = state.rooms.find(r => r.id === e.target.value); setB(s => ({ ...s, roomId: room.id, price: room.price, guests: Math.min(Number(s.guests), room.capacity) })); }}>{state.rooms.map(r => <option key={r.id} value={r.id}>{r.name} · {r.capacity} fő</option>)}</select></Field><Field label="Vendégek száma" type="number" min="1" max={state.rooms.find(r => r.id === b.roomId)?.capacity} value={b.guests} onChange={set('guests')} required/><Field label="Érkezés" type="date" value={b.from} onChange={set('from')} required/><Field label="Távozás" type="date" value={b.to} onChange={set('to')} required/><Field label={`Ár / éj (${state.property.currency})`} type="number" min="0" step="0.01" value={b.price} onChange={set('price')} required/><Field label={`Már befizetve (${state.property.currency})`} type="number" min="0" step="0.01" value={b.deposit} onChange={set('deposit')} required/><Field label="Foglalás forrása"><select value={b.source} onChange={set('source')}>{['Közvetlen', 'Telefon', 'Booking.com', 'Airbnb', 'Egyéb'].map(x => <option key={x}>{x}</option>)}</select></Field><Field label="Vendég nyelve"><select value={b.language} onChange={set('language')}>{Object.entries(LANGUAGES).map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select></Field><Field label="Állapot"><select value={b.status} onChange={set('status')}>{Object.entries(STATUS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select></Field></div><Field label="Megjegyzés, különleges kérés"><textarea value={b.note} onChange={set('note')} rows={3} maxLength={1000} placeholder="Érkezési idő, reggeli, háziállat…"/></Field><div className="booking-total"><span>{Math.max(0, nights(b.from, b.to) || 0)} éjszaka · teljes szállásdíj</span><strong>{money(Math.max(0, nights(b.from, b.to) || 0) * (Number(b.price) || 0), state.property.currency)}</strong></div>{error && <div className="notice error" role="alert">{error}</div>}<Btn type="submit"><Check size={16}/>Foglalás mentése</Btn></form>;
+  const [b, setB] = useState({ ...draft });
+  const [error, setError] = useState('');
+  const [detailsOpen, setDetailsOpen] = useState(false);
+  const set = key => e => setB(s => ({ ...s, [key]: e.target.value }));
+  const room = state.rooms.find(r => r.id === b.roomId);
+  function submit(e) {
+    e.preventDefault();
+    const value = { ...b, name: b.name.trim(), guests: Number(b.guests), price: Number(b.price), deposit: Number(b.deposit) };
+    const emailCheck = document.createElement('input');
+    emailCheck.type = 'email';
+    emailCheck.value = b.email;
+    if (!emailCheck.validity.valid) { setDetailsOpen(true); return setError('Ellenőrizd az e-mail címet, vagy hagyd üresen.'); }
+    const validationError = validateBooking(value, state);
+    if (validationError) {
+      setError(validationError);
+      if (!Number.isInteger(value.guests) || value.guests < 1 || value.guests > (room?.capacity || 0) || !Number.isFinite(value.price) || value.price < 0 || !Number.isFinite(value.deposit) || value.deposit < 0 || value.deposit > value.price * nights(value.from, value.to)) setDetailsOpen(true);
+      return;
+    }
+    if (b.status === 'checked-in' && (draft.status !== 'checked-in' || b.roomId !== draft.roomId) && (!room?.clean || b.from > today() || b.to <= today())) {
+      setDetailsOpen(true);
+      return setError('Érkeztetéshez tiszta szoba és aktuális tartózkodási időszak szükséges.');
+    }
+    onSave(value);
+  }
+  return <form onSubmit={submit} className="edit-form booking-simple">
+    <p className="booking-intro">A foglaláshoz ennyi elég. A többi adatot később is kiegészítheted.</p>
+    <div className="form-grid booking-basics">
+      <Field label="Vendég neve" value={b.name} onChange={set('name')} required maxLength={100} placeholder="Például Kiss Anna"/>
+      <Field label="Érkezés" type="date" value={b.from} onChange={set('from')} required/>
+      <Field label="Távozás" type="date" value={b.to} onChange={set('to')} required/>
+      <Field label="Szoba vagy kiadó ház"><select value={b.roomId} onChange={e => { const selectedRoom = state.rooms.find(r => r.id === e.target.value); setB(s => ({ ...s, roomId: selectedRoom.id, price: selectedRoom.price, guests: Math.min(Number(s.guests), selectedRoom.capacity) })); }}>{state.rooms.map(r => <option key={r.id} value={r.id}>{r.name} · legfeljebb {r.capacity} fő</option>)}</select></Field>
+    </div>
+    <p className="booking-stay-note">{Math.max(0, nights(b.from, b.to) || 0)} éjszaka · Vendégek száma: {b.guests} <span>(a további adatoknál módosítható)</span></p>
+    {error && <div className="notice error" role="alert">{error}</div>}
+    <button type="button" className="booking-details-toggle" aria-expanded={detailsOpen} aria-controls="booking-extra-fields" onClick={() => setDetailsOpen(open => !open)}><span><strong>További adatok (nem kötelező)</strong><small>Vendégszám, elérhetőség, megjegyzés és egyéb részletek.</small></span><ChevronRight size={18}/></button>
+    {detailsOpen && <div id="booking-extra-fields" className="booking-extra-fields">
+      <div className="form-grid">
+        <Field label="Vendégek száma" type="number" min="1" max={room?.capacity} value={b.guests} onChange={set('guests')} required/>
+        <Field label="E-mail cím" type="email" value={b.email} onChange={set('email')} maxLength={180}/>
+        <Field label="Foglalás forrása"><select value={b.source} onChange={set('source')}>{['Közvetlen', 'Telefon', 'Booking.com', 'Airbnb', 'Egyéb'].map(x => <option key={x}>{x}</option>)}</select></Field>
+        <Field label="Vendég nyelve"><select value={b.language} onChange={set('language')}>{Object.entries(LANGUAGES).map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select></Field>
+        <Field label="Állapot"><select value={b.status} onChange={set('status')}>{Object.entries(STATUS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select></Field>
+      </div>
+      <Field label="Megjegyzés, különleges kérés"><textarea value={b.note} onChange={set('note')} rows={3} maxLength={1000} placeholder="Érkezési idő, reggeli, háziállat…"/></Field>
+      <div className="booking-optional-money"><h3>Ár és befizetés — ha szeretnéd követni</h3><p>Az ár a szoba beállításából érkezik. Befizetést nem kell megadnod; új foglalásnál alapból 0.</p><div className="form-grid"><Field label={`Ár / éj (${state.property.currency})`} type="number" min="0" step="0.01" value={b.price} onChange={set('price')} required/><Field label={`Már befizetve (${state.property.currency})`} type="number" min="0" step="0.01" value={b.deposit} onChange={set('deposit')} required/></div><div className="booking-total"><span>Teljes szállásdíj a megadott árból</span><strong>{money(Math.max(0, nights(b.from, b.to) || 0) * (Number(b.price) || 0), state.property.currency)}</strong></div></div>
+    </div>}
+    <Btn type="submit"><Check size={16}/>Foglalás mentése</Btn>
+  </form>;
 }
 function RoomForm({ draft, state, onSave }) {
   const [r, setR] = useState({ ...draft }); const [error, setError] = useState(''); const set = key => e => setR(s => ({ ...s, [key]: e.target.value }));
