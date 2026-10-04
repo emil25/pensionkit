@@ -1,0 +1,5 @@
+{
+  "userRequest": "Fejleszd tovább a kis panziók és kiadó házak tulajdonosainak készített PensiuneKit oldalt.",
+  "changeSummary": "Új Díjak és befizetések nézet: érkezési hónaponként a teljes tartózkodás díja, a kézzel rögzített befizetések és a hátralék. Lemondások kizárva, lezárt tartózkodások megtartva. Szűrés, keresés és CSV-letöltés. Az összegeket kód számolja; a rendszer nem ellenőrzi a banki jóváírásokat.",
+  "checks": "A végleges teszt- és böngészős ellenőrzések eredményét a fejlesztőnek kell ide beírnia. Ez a fájl bemeneti példa, nem ellenőrzési jegyzőkönyv."
+}

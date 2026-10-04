@@ -26,6 +26,7 @@ Kis panziók, családi vendégházak és kiadó házak napi munkájára készül
 - Napi érkezések, várható távozások, foglalt szobák és takarítási állapot.
 - Érkeztetés tiszta szobába, távozáskor takarításra jelölés.
 - Saját teendőlista.
+- Díjak és befizetések: érkezési hónaponként teljes szállásdíj, kézzel rögzített befizetés és hátralék; rendezett és nyitott tételek szűrése, keresés, foglalás megnyitása, szűrt CSV-letöltés. A lemondások kimaradnak, a lezárt tartózkodások megmaradnak. A rendszer nem ellenőrzi a banki jóváírásokat.
 - Magyar, román, angol és német szerkeszthető vendégüzenetek. A szövegsegéd sablonokat használ.
 - Szerkeszthető magyar marketingvázlat saját időponthoz és ajánlathoz.
 - Vendégútmutató szerkesztése, mobilos előnézet és önálló HTML-letöltés.
@@ -56,7 +57,9 @@ Automatikus Booking.com/Airbnb szinkron, valódi AI-végpont, automatikus üzene
 
 ## Ellenőrzés
 
-`npm run build` és `node --test model.test.js cloud.test.js setup.test.js` (19 teszt).
+`npm run build` és `npm test` (29 teszt).
+
+Az Amplifier/Jev fejlesztési előkészítésről és a külön Jev ellenőrzőről a [FEJLESZTESI-MUNKAFOLYAMAT.md](FEJLESZTESI-MUNKAFOLYAMAT.md) ír. Ez nem része a weboldali AI-funkcióknak; élő API-kapcsolatot kulcs nélkül nem aktivál.
 
 A böngészős ellenőrzés lefedte a foglalás létrehozását, az ütközésjelzést, az újratöltés utáni mentést, a takarítás–érkeztetés–távozás folyamatát, a QR-kód elkészítését, az üzenetsablonokat és a mobilos navigációt.
 

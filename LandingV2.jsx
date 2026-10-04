@@ -10,7 +10,7 @@ const FEATURES = [
   [ShieldCheck, 'Mentés, ami kéznél van.', 'Helyi munkaterület, letölthető biztonsági másolat és foglalásexport. A szállásod adatait bármikor magaddal viheted.'],
 ];
 const PLANS = [
-  { name: 'Ingyenes', monthly: 0, annual: 0, description: 'Indulj el a saját szállásoddal.', features: ['1 szálláshely munkaterülete', 'Foglalási naptár és szobák', 'Takarítás és napi teendők', 'Vendégútmutató és QR-kód', 'Négynyelvű üzenetsablonok', 'Weboldal- és adatletöltés'] },
+  { name: 'Ingyenes', monthly: 0, annual: 0, description: 'Indulj el a saját szállásoddal.', features: ['1 szálláshely munkaterülete', 'Foglalási naptár és szobák', 'Takarítás és napi teendők', 'Díjak és befizetések', 'Vendégútmutató és QR-kód', 'Négynyelvű üzenetsablonok', 'Weboldal- és adatletöltés'] },
   { name: 'Starter', monthly: 12, annual: 9, description: 'A mindennapokhoz, több kényelemmel.', planned: true, features: ['Az Ingyenes csomag funkciói', 'Fiók és több eszközös elérés', 'Automatikus felhőmentés', 'Közzétett vendégútmutató', 'Online szállásbemutatkozó oldal'] },
   { name: 'Pro', monthly: 29, annual: 24, description: 'Ha több vendégházat viszel.', planned: true, featured: true, features: ['A Starter csomag funkciói', 'Legfeljebb 3 szálláshely', 'Szállások közötti gyors váltás', 'Részletes bevételi kimutatások', 'Közös áttekintés a szállásaidról'] },
 ];
