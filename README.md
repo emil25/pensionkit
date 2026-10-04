@@ -17,6 +17,8 @@ Kis panziók, családi vendégházak és kiadó házak napi munkájára készül
 
 ## Ami működik
 
+- Háromlépéses első szállásbeállítás: alapadatok és pénznem, külön szobák vagy teljes kiadó ház, vendégtudnivalók. A befejezéskor egyben ment; a már felvett szobákat és foglalásokat nem írhatja felül.
+- Indulási lista a saját áttekintésen, valós mentett adatokból számolt előrehaladással és az első foglaláshoz vezető gombbal.
 - Saját szállásbeállítások, szobák és teljes kiadó házak felvétele.
 - Foglalás rögzítése, szerkesztése, lemondása és keresése.
 - Időpontütközés, férőhely, érvényes dátum és befizetés ellenőrzése.
@@ -54,7 +56,7 @@ Automatikus Booking.com/Airbnb szinkron, valódi AI-végpont, automatikus üzene
 
 ## Ellenőrzés
 
-`npm run build` és `node --test model.test.js cloud.test.js`.
+`npm run build` és `node --test model.test.js cloud.test.js setup.test.js` (19 teszt).
 
 A böngészős ellenőrzés lefedte a foglalás létrehozását, az ütközésjelzést, az újratöltés utáni mentést, a takarítás–érkeztetés–távozás folyamatát, a QR-kód elkészítését, az üzenetsablonokat és a mobilos navigációt.
 
