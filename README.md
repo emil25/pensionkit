@@ -24,6 +24,7 @@ Kis panziók, családi vendégházak és kiadó házak napi munkájára készül
 - Egyszerű foglalásfelvétel: vendégnév, érkezés, távozás és szoba vagy kiadó ház. A további adatok külön nyithatók meg; az ár a szobabeállításból érkezik, új foglalásnál a befizetés alapból 0. A meglévő részletek szerkesztéskor megmaradnak akkor is, ha a kiegészítő mezőket nem nyitod meg.
 - Időpontütközés, férőhely, érvényes dátum és befizetés ellenőrzése.
 - Kéthetes szobánkénti naptár. A távozás napja újra foglalható.
+- Havi naptár szobaszűrővel és naponta megnyitható vendéglistával: érkezők, távozók, bent lakók és a szabad szobákból indítható foglalás. Mobilon vízszintes görgetés nélkül használható; a korábbi kéthetes szobánkénti nézet is elérhető.
 - Napi érkezések, várható távozások, foglalt szobák és takarítási állapot.
 - Érkeztetés tiszta szobába, távozáskor takarításra jelölés.
 - Saját teendőlista.
@@ -58,7 +59,7 @@ Automatikus Booking.com/Airbnb szinkron, valódi AI-végpont, automatikus üzene
 
 ## Ellenőrzés
 
-`npm run build` és `npm test` (29 teszt).
+`npm run build` és `npm test` (34 teszt).
 
 Az Amplifier/Jev fejlesztési előkészítésről és a külön Jev ellenőrzőről a [FEJLESZTESI-MUNKAFOLYAMAT.md](FEJLESZTESI-MUNKAFOLYAMAT.md) ír. Ez nem része a weboldali AI-funkcióknak; élő API-kapcsolatot kulcs nélkül nem aktivál.
 
@@ -67,3 +68,5 @@ A böngészős ellenőrzés lefedte a foglalás létrehozását, az ütközésje
 Az eredeti helyi forrás másolata a fejlesztési munkamappa `original-source` almappájában maradt meg.
 
 A főoldal Árak szakasza (#pricing) az eredeti díjakat mutatja: Ingyenes 0 €, Starter 12 €/hó (évesen 108 €), Pro 29 €/hó (évesen 288 €). A Starter és Pro egyértelműen tervezett csomagok; a felsorolt bővítések nem aktív fizetős szolgáltatások. Fizetés és előfizetés nem történik. A jelenlegi helyi munkaterület összes funkciója ingyen elérhető. Az új főoldal saját landing.css stíluslapot használ.
+
+A főoldal új szlogenje: „Lásd, ki érkezik. Tudd, mi szabad.” A három használati példa jelölt minta; a naptár- és útmutatógomb közvetlenül a demó megfelelő nézetét nyitja. A vendégházas kép saját generált AI-illusztráció; a leírása az IMAGE-ASSET.md fájlban található.

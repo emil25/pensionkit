@@ -34,13 +34,15 @@ export default function App() {
   }, [session?.user.id]);
   async function save(state) { await saveWorkspace(supabase, session.user.id, state); }
   async function logout() { if (supabase) { const { error } = await supabase.auth.signOut(); if (error) { setError('A kijelentkezés nem sikerült. Próbáld újra.'); return; } } window.location.hash = ''; }
+  const [routePath, routeQuery = ''] = route.split('?');
+  const demoView = new URLSearchParams(routeQuery).get('view');
   if (/^#g(?:\/|$)/.test(route)) {
     let slug = ''; try { slug = decodeURIComponent(route.slice(3)); } catch { slug = '__invalid__'; }
     return <GuestGuideRoute slug={slug} />;
   }
-  if (!['#app', '#demo', '#local'].includes(route)) return <Landing configured={isConfigured} />;
-  if (route === '#demo') return <Workspace key="demo" demoMode storageKey="pensiunekit-demo-v2" onLogout={() => { window.location.hash = ''; }} />;
-  if (!isConfigured || route === '#local') return <Workspace key="local" storageKey="pensiunekit-local-v2" onLogout={() => { window.location.hash = ''; }} />;
+  if (!['#app', '#demo', '#local'].includes(routePath)) return <Landing configured={isConfigured} />;
+  if (routePath === '#demo') return <Workspace key="demo" demoMode initialView={demoView} storageKey="pensiunekit-demo-v2" onLogout={() => { window.location.hash = ''; }} />;
+  if (!isConfigured || routePath === '#local') return <Workspace key="local" storageKey="pensiunekit-local-v2" onLogout={() => { window.location.hash = ''; }} />;
   if (!ready) return <div className="loading-page">A szállásod betöltése…</div>;
   if (recovery) return <Auth recovery onRecovered={() => setRecovery(false)} />;
   if (!session) return <Auth />;

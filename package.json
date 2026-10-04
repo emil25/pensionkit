@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "node --test model.test.js cloud.test.js setup.test.js finance.test.js tools/jev-review.test.mjs",
+    "test": "node --test model.test.js cloud.test.js setup.test.js finance.test.js calendar.test.js tools/jev-review.test.mjs",
     "dev:jev": "node tools/jev-review.mjs"
   },
   "dependencies": {
