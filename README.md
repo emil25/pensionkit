@@ -59,3 +59,5 @@ Automatikus Booking.com/Airbnb szinkron, valódi AI-végpont, automatikus üzene
 A böngészős ellenőrzés lefedte a foglalás létrehozását, az ütközésjelzést, az újratöltés utáni mentést, a takarítás–érkeztetés–távozás folyamatát, a QR-kód elkészítését, az üzenetsablonokat és a mobilos navigációt.
 
 Az eredeti helyi forrás másolata a fejlesztési munkamappa `original-source` almappájában maradt meg.
+
+A főoldal Árak szakasza (#pricing) az eredeti díjakat mutatja: Ingyenes 0 €, Starter 12 €/hó (évesen 108 €), Pro 29 €/hó (évesen 288 €). A Starter és Pro egyértelműen tervezett csomagok; a felsorolt bővítések nem aktív fizetős szolgáltatások. Fizetés és előfizetés nem történik. A jelenlegi helyi munkaterület összes funkciója ingyen elérhető. Az új főoldal saját landing.css stíluslapot használ.
