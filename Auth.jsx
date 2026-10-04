@@ -22,31 +22,35 @@ function Input({ icon: I, ...props }) {
   );
 }
 
-export default function Auth() {
-  const [mode, setMode] = useState("login"); // login | register | forgot
+export default function Auth({ recovery, onRecovered }) {
+  const [mode, setMode] = useState(recovery ? "recovery" : "login");
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState(null); // {ok, text}
 
   const submit = async () => {
-    if (!email.trim()) return setMsg({ ok: false, text: "Add meg az e-mail címedet." });
+    if (mode !== 'recovery' && !email.trim()) return setMsg({ ok: false, text: "Add meg az e-mail címedet." });
     if (mode !== "forgot" && pass.length < 6)
       return setMsg({ ok: false, text: "A jelszó legalább 6 karakter legyen." });
     setLoading(true);
     setMsg(null);
     try {
-      if (mode === "login") {
+      if (mode === 'recovery') {
+        const { error } = await supabase.auth.updateUser({ password: pass });
+        if (error) throw error;
+        onRecovered?.();
+      } else if (mode === "login") {
         const { error } = await supabase.auth.signInWithPassword({ email, password: pass });
         if (error) throw error;
         // sikeres belépés után az App.jsx automatikusan átvált a dashboardra
       } else if (mode === "register") {
-        const { error } = await supabase.auth.signUp({ email, password: pass });
+        const { error } = await supabase.auth.signUp({ email: email.trim(), password: pass, options: { emailRedirectTo: window.location.origin + '#app' } });
         if (error) throw error;
         setMsg({ ok: true, text: "Sikeres regisztráció! Nézd meg a postafiókodat — a megerősítő linkre kattintva tudsz belépni. (Ha nem jött levél, a spam mappát is nézd meg.)" });
       } else {
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
-          redirectTo: window.location.origin,
+          redirectTo: window.location.origin + '#app',
         });
         if (error) throw error;
         setMsg({ ok: true, text: "Elküldtük a jelszó-visszaállító e-mailt. Nézd meg a postafiókodat." });
@@ -80,6 +84,7 @@ export default function Auth() {
     login: ["Üdv újra!", "Lépj be a vendégházad vezérlőpultjába."],
     register: ["Fiók létrehozása", "Ingyenes — csak egy e-mail cím és egy jelszó kell."],
     forgot: ["Elfelejtett jelszó", "Megadod az e-mail címed, és küldünk egy visszaállító linket."],
+    recovery: ["Új jelszó", "Állíts be új jelszót a fiókodhoz."],
   };
 
   return (
@@ -102,10 +107,10 @@ export default function Auth() {
           <p className="text-sm mt-1 mb-5" style={{ color: T.muted }}>{titles[mode][1]}</p>
 
           <div className="space-y-3">
-            <Input icon={Mail} type="email" placeholder="E-mail cím" value={email}
-              onChange={(e) => setEmail(e.target.value)} />
+            {mode !== 'recovery' && <Input icon={Mail} type="email" aria-label="E-mail cím" autoComplete="email" placeholder="E-mail cím" value={email}
+              onChange={(e) => setEmail(e.target.value)} />}
             {mode !== "forgot" && (
-              <Input icon={Lock} type="password" placeholder="Jelszó (min. 6 karakter)" value={pass}
+              <Input icon={Lock} type="password" aria-label="Jelszó" autoComplete={mode === 'login' ? 'current-password' : 'new-password'} placeholder="Jelszó (min. 6 karakter)" value={pass}
                 onChange={(e) => setPass(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && submit()} />
             )}
@@ -133,10 +138,10 @@ export default function Auth() {
             className="mt-5 w-full py-3 rounded-xl text-sm font-semibold text-white flex items-center justify-center gap-2 disabled:opacity-60"
             style={{ background: T.accent }}>
             {loading && <Loader2 size={15} className="animate-spin" />}
-            {mode === "login" ? "Belépés" : mode === "register" ? "Regisztráció" : "Visszaállító link küldése"}
+            {mode === "login" ? "Belépés" : mode === "register" ? "Regisztráció" : mode === 'recovery' ? 'Új jelszó mentése' : "Visszaállító link küldése"}
           </button>
 
-          {mode !== "forgot" && (
+          {!['forgot', 'recovery'].includes(mode) && (
             <>
               <div className="flex items-center gap-3 my-4">
                 <div className="flex-1 h-px" style={{ background: T.line }} />
