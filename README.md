@@ -59,7 +59,7 @@ Automatikus Booking.com/Airbnb szinkron, valódi AI-végpont, automatikus üzene
 
 ## Ellenőrzés
 
-`npm run build` és `npm test` (34 teszt).
+`npm run build` és `npm test` (42 teszt).
 
 Az Amplifier/Jev fejlesztési előkészítésről és a külön Jev ellenőrzőről a [FEJLESZTESI-MUNKAFOLYAMAT.md](FEJLESZTESI-MUNKAFOLYAMAT.md) ír. Ez nem része a weboldali AI-funkcióknak; élő API-kapcsolatot kulcs nélkül nem aktivál.
 
@@ -70,3 +70,8 @@ Az eredeti helyi forrás másolata a fejlesztési munkamappa `original-source` a
 A főoldal Árak szakasza (#pricing) az eredeti díjakat mutatja: Ingyenes 0 €, Starter 12 €/hó (évesen 108 €), Pro 29 €/hó (évesen 288 €). A Starter és Pro egyértelműen tervezett csomagok; a felsorolt bővítések nem aktív fizetős szolgáltatások. Fizetés és előfizetés nem történik. A jelenlegi helyi munkaterület összes funkciója ingyen elérhető. Az új főoldal saját landing.css stíluslapot használ.
 
 A főoldal új szlogenje: „Lásd, ki érkezik. Tudd, mi szabad.” A három használati példa jelölt minta; a naptár- és útmutatógomb közvetlenül a demó megfelelő nézetét nyitja. A vendégházas kép saját generált AI-illusztráció; a leírása az IMAGE-ASSET.md fájlban található.
+
+
+## A 2026. október 8-i ZIP-ből átvett fejlesztések
+
+A dizájn, telefonszám/WhatsApp, ellenőrzött .ics fájlcsere, saját útmutatófordítások és A5 QR-kártya részletei: [ZIP-OSSZEHASONLITAS.md](ZIP-OSSZEHASONLITAS.md). A naptárfájlok beolvasása kézi, nem automatikus csatornaszinkron.

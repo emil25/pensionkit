@@ -1,3 +1,5 @@
+import { phoneNumber } from './guest-tools.js';
+import { validGuideTranslations } from './guide.js';
 export const STORE_VERSION = 2;
 export const today = () => new Intl.DateTimeFormat('sv-SE', { timeZone: 'Europe/Bucharest' }).format(new Date());
 export function addDays(value, days) {
@@ -44,6 +46,7 @@ export function conflict(bookings, draft) {
 }
 export function validateBooking(draft, state) {
   if (!draft.name?.trim()) return 'Add meg a vendég nevét.';
+  if (draft.phone && (typeof draft.phone !== 'string' || !phoneNumber(draft.phone))) return 'A telefonszámot országkóddal add meg, például +40… vagy +36….';
   const room = state.rooms.find(r => r.id === draft.roomId);
   if (!room) return 'Válassz szobát.';
   const validDay = value => { if (!/^\d{4}-\d{2}-\d{2}$/.test(value || '')) return false; const date = new Date(`${value}T12:00:00Z`); return Number.isFinite(date.getTime()) && date.toISOString().slice(0, 10) === value; };
@@ -57,6 +60,8 @@ export function validateBooking(draft, state) {
 }
 export function validateState(s) {
   if (!s || s.version !== STORE_VERSION || !s.property || typeof s.property.name !== 'string' || !['EUR', 'HUF', 'RON'].includes(s.property.currency) || !Array.isArray(s.rooms) || !Array.isArray(s.bookings) || !Array.isArray(s.tasks)) return false;
+  if (!validGuideTranslations(s.property.guideTranslations)) return false;
+  if (!s.bookings.every(b => b && typeof b === 'object' && (b.phone === undefined || typeof b.phone === 'string') && (b.externalUid === undefined || (typeof b.externalUid === 'string' && b.externalUid.length <= 500)))) return false;
   if (Object.entries(DEFAULT_PROPERTY).some(([key]) => typeof s.property[key] !== 'string')) return false;
   const unique = list => list.every(x => x && typeof x === 'object') && new Set(list.map(x => x.id)).size === list.length;
   if (![s.rooms, s.bookings, s.tasks].every(unique)) return false;

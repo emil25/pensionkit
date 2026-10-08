@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { createState, DEFAULT_PROPERTY } from './model.js';
+import { validGuideTranslations } from './guide.js';
 import { guideHtml } from './exports.js';
 import { supabase, isConfigured } from './supabaseClient.js';
 
@@ -8,6 +9,7 @@ function publicProperty(data) {
   const p = { ...DEFAULT_PROPERTY };
   for (const key of Object.keys(p)) if (typeof data[key] === 'string') p[key] = data[key];
   for (const key of ['checkin', 'checkout']) p[key] = p[key].match(/\d{2}:\d{2}/)?.[0] || DEFAULT_PROPERTY[key];
+  if (validGuideTranslations(data.guideTranslations)) p.guideTranslations = data.guideTranslations;
   return p;
 }
 

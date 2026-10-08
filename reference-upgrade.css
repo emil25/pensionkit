@@ -1,0 +1,68 @@
+.lp{background:#f6f5ef;--lp-line:#e0e4d9;--lp-ink:#243e2e;--lp-muted:#58675b}
+.lp .lp-header{background:#f6f5eff2;border-bottom:1px solid #e0e4d9;backdrop-filter:blur(12px)}
+.lp .lp-hero{gap:48px;padding-top:46px;padding-bottom:58px;align-items:start}
+.lp .lp-hero-copy{padding-top:14px}
+.lp .lp-hero h1{font:600 clamp(42px,4.4vw,62px)/1.1 Georgia,serif;letter-spacing:-2px}
+.lp .lp-hero h1>span{font-style:italic;font-weight:400;color:#416345}
+.lp .lp-hero-product{display:flex;flex-direction:column;gap:18px;min-width:0}
+.lp .lp-hero-product .lp-preview-wrap{width:100%;padding:0;margin:0}
+.lp .lp-hero-image{margin:0;border:1px solid #dce3d3;border-radius:12px}
+.lp .lp-hero-image img{height:170px}
+.lp .lp-hero-image figcaption{font-size:9px}
+.lp-host-note{margin-top:32px;background:#244836;border-radius:14px;padding:26px 28px;color:white;max-width:500px}
+.lp-host-note>span{font-size:9px;letter-spacing:1.5px;color:#dce7b7}
+.lp-host-note>strong{display:block;margin:13px 0;font:normal 29px/1.25 Georgia,serif;letter-spacing:-.5px}
+.lp-host-note p{font-size:12px;line-height:1.8;color:#d4dfd5;max-width:350px}
+.lp-host-note a{display:inline-flex;align-items:center;gap:8px;margin-top:17px;font-size:12px;color:#e1edb7;font-weight:600}
+.lp .lp-section-heading h2,.lp .lp-center-heading h2,.lp .lp-faq h2{font-family:Georgia,serif;font-weight:500;letter-spacing:-1px}
+.lp .lp-pricing{background:#244836;color:white;border:0}
+.lp .lp-pricing .lp-label,.lp .lp-pricing h2>span{color:#dce7b7}
+.lp .lp-pricing .lp-center-heading>p{color:#d3dfd3}
+.lp .lp-pricing .lp-plan{color:#243e2e;border-color:#dce3d4}
+.lp .lp-pricing .lp-plan.featured{background:#eef2df;border:2px solid #dce7b7;color:#243e2e}
+.lp .lp-pricing .lp-plan-top{flex-wrap:wrap}
+.lp .lp-pricing .lp-plan h3{font:600 23px/1.2 Georgia,serif;letter-spacing:-.4px}
+.lp .lp-pricing .lp-plan-status{font-size:9px}
+.lp .lp-pricing .lp-plan.featured .lp-plan-description,.lp .lp-pricing .lp-plan.featured .lp-price-period,.lp .lp-pricing .lp-plan.featured .lp-price>span,.lp .lp-pricing .lp-plan.featured li{color:#4e6046}
+.lp .lp-pricing .lp-plan.featured .lp-plan-status{color:#536842;background:#dce7c6}
+.lp .lp-pricing .lp-plan.featured .lp-plan-features-label{border-color:#d0dbc1;color:#617452}
+.lp .lp-pricing .lp-plan.featured li svg{color:#587b3f}
+.lp .lp-pricing-note,.lp .lp-pricing-note strong{color:#dae6d2}
+.guest-contact{display:flex;align-items:center;flex-wrap:wrap;gap:6px;flex-shrink:0}
+.guest-contact a{font-size:11px;padding:7px 9px;border:1px solid #d7e1ce;border-radius:7px;background:#f4f7ef;color:#36502e;line-height:1.4}
+.guest-contact a:hover{background:#e5edda}
+.record-management{margin-top:18px;padding-top:18px;border-top:1px solid #e1e6da}
+.record-management p{font-size:13px;line-height:1.7;margin-bottom:12px}
+.record-management .mini-btn{margin-left:8px}
+.danger-link{color:#98583b;font-size:13px;min-height:40px;text-decoration:underline;text-underline-offset:4px}
+.ical-panel{margin-top:26px;overflow:hidden}
+.ical-panel>summary{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:21px 24px;cursor:pointer;list-style:none}
+.ical-panel>summary::-webkit-details-marker{display:none}
+.ical-panel>summary>span{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.ical-panel>summary strong{font-size:15px;font-weight:600}
+.ical-panel>summary small{font-size:12px;color:#67785c}
+.ical-panel[open]>summary{border-bottom:1px solid #e1e6da}
+.ical-panel[open]>summary>svg{transform:rotate(90deg)}
+.ical-content{padding:24px}
+.ical-content>.quiet{line-height:1.9;margin-bottom:20px}
+.ical-columns{display:grid;grid-template-columns:1.2fr 1fr;gap:28px;margin:24px 0}
+.ical-columns h3,.ical-report h3{font-size:17px;margin-bottom:16px}
+.ical-columns section>.quiet{line-height:1.9;margin-bottom:18px}
+.ical-columns .btn+.quiet{margin-top:18px}
+.ical-report{padding:20px;border-radius:12px;background:#f1f5e9;border:1px solid #d7e3ca}
+.ical-report ul{padding-left:20px;font-size:13px;line-height:1.8;max-height:260px;overflow:auto;margin-block:12px}
+.ical-report summary{font-size:13px;cursor:pointer;padding-block:8px}
+.ical-report .quiet{margin-block:15px;line-height:1.8}
+.guide-preview-language{max-width:300px;margin:18px auto}
+.workspace .guide-preview{display:block}
+.workspace .guide-preview .phone-frame{width:280px;max-width:100%}
+.workspace .guide-preview .phone-frame iframe{max-width:100%}
+.guide-fields>.field{margin-top:18px}
+.guide-fields .field small{display:block;line-height:1.7;white-space:pre-line;font-size:12px}
+.qr-card-actions{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin-top:20px}
+.guide-editor .tab-bar{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
+.guide-editor .tab-bar button{padding-inline:8px;min-height:48px}
+.guide-fields input,.guide-fields select,.guide-fields textarea,.ical-content input,.ical-content select,.ical-content textarea{font-size:16px;max-width:100%}
+@media(max-width:1050px){.arrival-row{flex-wrap:wrap}.arrival-row .guest-contact{margin-left:42px}.lp .lp-hero{gap:30px}.lp-host-note{padding:22px}.lp-host-note>strong{font-size:26px}}
+@media(max-width:700px){.lp .lp-hero{gap:30px;padding-top:30px}.lp .lp-hero h1{font-size:clamp(37px,9.7vw,52px);letter-spacing:-1.2px}.lp-host-note{margin-top:26px;padding:22px}.lp-host-note>strong{font-size:27px}.lp .lp-hero-image img{height:180px}.lp .lp-pricing .lp-plan h3{font-size:24px}.ical-content{padding:20px}.ical-panel>summary{padding:18px}.ical-panel>summary>span{gap:9px}.ical-panel>summary small{width:100%;padding-left:28px;line-height:1.6}.ical-columns{grid-template-columns:1fr;gap:25px}.ical-columns>section+section{border-top:1px solid #dce5d3;padding-top:24px}.ical-content .form-grid{grid-template-columns:1fr}.ical-content .btn{max-width:100%;white-space:normal;text-align:left}.guest-contact a{font-size:12px;padding:9px}.booking-row .guest-contact{grid-column:2;grid-row:3}.booking-row .guest-contact:empty{display:none}.guide-editor .tab-bar button{font-size:12px}.guide-layout{gap:26px}.guide-preview{min-width:0}.qr-card{padding:22px}.qr-card small{overflow-wrap:anywhere}}
+@media(prefers-reduced-motion:reduce){.lp .lp-header{backdrop-filter:none}}
